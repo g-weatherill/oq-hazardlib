@@ -91,3 +91,5 @@ class StdDev(ConstantContainer):
     #: (see
     #: :meth:`openquake.hazardlib.gsim.base.GroundShakingIntensityModel.get_poes`).
     TOTAL = 'Total'
+    #: Standard deviation representing a "Single Station" sigma
+    SINGLE_STATION = 'Single station'

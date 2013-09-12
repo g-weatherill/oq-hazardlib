@@ -62,9 +62,9 @@ class AbrahamsonEtAl2013Inter(GMPE):
 
     #: Required site parameters is Vs30, used to distinguish between NEHRP
     #: soil classes, see paragraph 'Functional Form', page 1706
-    #: For the Abrahamson et al (2013) GMPE a new term is introduced to 
-    #: determine whether a site is on the forearc with respect to the 
-    #: subduction interface, or on the backarc. This boolean is a vector 
+    #: For the Abrahamson et al (2013) GMPE a new term is introduced to
+    #: determine whether a site is on the forearc with respect to the
+    #: subduction interface, or on the backarc. This boolean is a vector
     #: containing True for a forearc site or False for a backarc site.
 
     REQUIRES_SITES_PARAMETERS = set(('vs30', 'forearc'))
@@ -73,10 +73,9 @@ class AbrahamsonEtAl2013Inter(GMPE):
     #: 1, page 1706
     REQUIRES_RUPTURE_PARAMETERS = set(('mag'))
 
-    #: Required distance measure is closest distance to rupture, for 
+    #: Required distance measure is closest distance to rupture, for
     #: interface events
     REQUIRES_DISTANCES = set(('rrup'))
-    
 
     def get_mean_and_stddevs(self, sites, rup, dists, imt, stddev_types):
         """
@@ -95,21 +94,20 @@ class AbrahamsonEtAl2013Inter(GMPE):
         pga1000 = np.exp(self._compute_imt1000(C_PGA, sites, rup, dists))
         mean = (self._compute_base_term(C) +
                 self._compute_magnitude_term(C, rup.mag) +
-                self._compute_distance_term(C, rup.mag, dists) + 
-                self._compute_focal_depth_term(C, rup) + 
+                self._compute_distance_term(C, rup.mag, dists) +
+                self._compute_focal_depth_term(C, rup) +
                 self._compute_forearc_backarc_term(C, sites, dists) +
                 self._compute_site_response_term(C, sites, pga1000))
 
         stddevs = self._getstddevs(C, stddev_types, len(sites.vs30))
         return mean, stddevs
 
-        
     def _get_delta_c1_coeffs(self, C):
         """
         Returns the choice of coefficients to use for Delta C1
-        The original manuscript provides three sets of coefficients for the 
-        large magnitude scaling term DeltaC_1. These are intended to represent 
-        the epistemic uncertainty in the large magnitude scaling with 
+        The original manuscript provides three sets of coefficients for the
+        large magnitude scaling term DeltaC_1. These are intended to represent
+        the epistemic uncertainty in the large magnitude scaling with
         a "lower", "central" and "upper" set of coefficients. See Table 8.
         As the DeltaC_1 coefficients were only given for five spectral periods
         and PGA in the original manuscript the values for intermediate periods
@@ -125,15 +123,13 @@ class AbrahamsonEtAl2013Inter(GMPE):
         """
         return C['theta1'] + (C['theta4'] * C['delta_c1'])
 
-
     def _compute_focal_depth_term(self, C, rup):
         """
-        Computes the hypocentral depth scaling term - as indicated by 
+        Computes the hypocentral depth scaling term - as indicated by
         equation (5)
         """
         # For interface events F_EVENT = 0.. so no depth scaling is returned
         return 0.
-
 
     def _compute_forearc_backarc_term(self, C, sites, dists):
         """
@@ -142,51 +138,43 @@ class AbrahamsonEtAl2013Inter(GMPE):
         f_faba = np.zeros_like(dists, rrup)
         # Term only applies to backarc sites (F_FABA = 0. for forearc)
         idx = np.logical_not(sites.forearc)
-
         max_dist = dists.rrup[idx]
         max_dist[max_dist < 100.0] = 100.0
         f_faba[idx] = C['theta15'] + C['theta16'] * np.log(max_dist / 40.0)
         return f_faba
 
-
     def _compute_magnitude_term(self, C, mag):
         """
-        Computes the magnitude scaling term given by equation (4). 
+        Computes the magnitude scaling term given by equation (4).
         """
-
-        if mag > C['dc1_cent']
-            f_mag = self.CONSTS['theta4'] * (mag - (7.8 + C['delta_c1'])) + \
+        if mag > C['dc1_cent']:
+            f_mag = self.CONSTS['theta4'] * (mag - (7.8 + C['delta_c1'])) +\
                 C['theta13'] * ((10. - mag) ** 2.)
         else:
-            f_mag = self.CONSTS['theta5'] * (mag - (7.8 + C['delta_c1'])) + \
+            f_mag = self.CONSTS['theta5'] * (mag - (7.8 + C['delta_c1'])) +\
                 C['theta13'] * ((10. - mag) ** 2.)
         return f_mag
-
 
     def _compute_distance_term(self, C, mag, dists):
         """
         Computes the distance scaling term, as contained within equation (3)
         """
-        return (C['theta2'] + self.CONSTS['theta3'] * (mag - 7.8)) * \
-            np.log(dists.rrup + self.CONSTS['c4'] * np.exp((mag - 6.) * 
-            self.CONSTS['theta9'])) + (C['theta6'] * dists.rrup)
-
+        return (C['theta2'] + self.CONSTS['theta3'] * (mag - 7.8)) *\
+            np.log(dists.rrup + self.CONSTS['c4'] * np.exp((mag - 6.) *
+                   self.CONSTS['theta9'])) + (C['theta6'] * dists.rrup)
 
     def _compute_site_response_term(self, C, sites, pga1000):
         """
-        Compute and return site response model term, the Abrahamson et al 
-        (2013) GMPE adopts the same site response scaling model of 
+        Compute and return site response model term, the Abrahamson et al
+        (2013) GMPE adopts the same site response scaling model of
         Walling et al (2008) as implemented in the Abrahamson & Silva (2008)
         GMPE. The functional form is retained here.
         """
         site_resp_term = np.zeros_like(sites.vs30)
-
         vs_star = sites.vs30.copy()
         vs_star[vs_star > 1000.0] = 1000.
-        
         vlin, c, n = C['vlin'], self.CONSTS['c'], self.CONSTS['n']
         theta12, b = C['theta12'], C['b']
-
         idx = sites.vs30 < vlin
         arg = vs_star[idx] / vlin
         site_resp_term[idx] = (theta12 * np.log(arg) -
@@ -197,7 +185,6 @@ class AbrahamsonEtAl2013Inter(GMPE):
         site_resp_term[idx] = (theta12 + b * n) * np.log(vs_star[idx] / vlin)
         return site_resp_term
 
-
     def _compute_imt_1000(self, C, sites, rup, dists):
         """
         Compute and return mean imt value for rock conditions
@@ -205,13 +192,12 @@ class AbrahamsonEtAl2013Inter(GMPE):
         """
         mean = (self._compute_base_term(C) +
                 self._compute_magnitude_term(C, rup.mag) +
-                self._compute_distance_term(C, rup.mag, dists) + 
-                self._compute_focal_depth_term(C, rup) + 
+                self._compute_distance_term(C, rup.mag, dists) +
+                self._compute_focal_depth_term(C, rup) +
                 self._compute_forearc_backarc_term(C, sites, dists))
-        site_response = (C['theta12'] + C['b'] * C['n']) * 
-            np.log(1000. / C['vlin'])
+        site_response = ((C['theta12'] + C['b'] * C['n']) *
+                         np.log(1000. / C['vlin']))
         return mean + site_response
-        
 
     def _get_stddevs(self, C, stddev_types, num_sites):
         """
@@ -230,9 +216,8 @@ class AbrahamsonEtAl2013Inter(GMPE):
                 stddevs.append(C['sigma_ss'] + np.zeros(num_sites))
         return stddevs
 
-
     # Period-dependent coefficients (Table 5)
-    COEFFS_SINTER=CoeffsTable(sa_damping5, table="""\
+    COEFFS_SINTER = CoeffsTable(sa_damping5, table="""\
 imt          vlin        b   theta1    theta2    theta6   theta7    theta8  theta10  theta11   theta12   theta13   theta14  theta15   theta16      phi     tau   sigma  sigma_ss  dc1_low  dc1_cent  dc1_high
 pga      865.1000  -1.1860   4.2203   -1.3500   -0.0012   1.0988   -1.4200   3.1200   0.0130    0.9800   -0.0135   -0.4000   0.9969   -1.0000   0.6000  0.4300  0.7400    0.6000   0.0000    0.2000    0.4000
 0.0200   865.1000  -1.1860   4.2203   -1.3500   -0.0012   1.0988   -1.4200   3.1200   0.0130    0.9800   -0.0135   -0.4000   0.9969   -1.0000   0.6000  0.4300  0.7400    0.6000   0.0000    0.2000    0.4000
@@ -276,7 +261,6 @@ class AbrahamsonEtAl2013InterHigh(AbrahamsonEtAl2013Inter):
     values of the magnitude scaling for large slab earthquakes, as defined in
     table 8
     """
-
     def _get_delta_c1_coeffs(self, C):
         """
         Returns the choice of coefficients to use for Delta C1
@@ -306,41 +290,36 @@ class AbrahamsonEtAl2013SSlab(AbrahamsonEtAl2013Inter):
     as "BC Hydro Ground Motion Prediction Equations For Subduction Earthquakes
     (2013, Earthquake Spectra, in press).
     This implements only the inslab GMPE. For inslab events the source is
-    considered to be a point source located at the hypocentre. Therefore 
+    considered to be a point source located at the hypocentre. Therefore
     the hypocentral distance metric is used in place of the rupture distance,
     and the hypocentral depth is used to scale the ground motion by depth
     """
-
     #: Required distance measure is hypocentral for in-slab events
     REQUIRES_DISTANCES = set(('rhypo'))
     #: In-slab events require constraint of hypocentral depth
     REQUIRES_RUPTURE_PARAMETERS = set(('mag', 'hypo_depth'))
-
 
     def _compute_base_term(self, C):
         """
         Computes the base model term described in equation (3)
         """
         return C['theta1'] + (C['theta4'] * C['delta_c1']) + C['theta10']
-                                                             
 
     def _compute_focal_depth_term(self, C, rup):
         """
-        Computes the hypocentral depth scaling term - as indicated by 
+        Computes the hypocentral depth scaling term - as indicated by
         equation (5)
         """
         return C['theta11'] * (rup.hypo_depth - 60.)
 
-    
     def _compute_distance_term(self, C, mag, dists):
         """
         Computes the distance scaling term, as contained within equation (3)
         """
-        return (C['theta2'] + C['theta14'] + self.CONSTS['theta3'] * 
-            (mag - 7.8)) * np.log(dists.rhypo + self.CONSTS['c4'] * 
-            np.exp((mag - 6.) * self.CONSTS['theta9'])) + \
-            (C['theta6'] * dists.rrup)
-
+        return ((C['theta2'] + C['theta14'] + self.CONSTS['theta3'] *
+                (mag - 7.8)) * np.log(dists.rhypo + self.CONSTS['c4'] *
+                np.exp((mag - 6.) * self.CONSTS['theta9'])) +
+                (C['theta6'] * dists.rrup))
 
     def _compute_forearc_backarc_term(self, C, sites, dists):
         """
@@ -349,7 +328,6 @@ class AbrahamsonEtAl2013SSlab(AbrahamsonEtAl2013Inter):
         f_faba = np.zeros_like(dists.rhypo)
         # Term only applies to backarc sites (F_FABA = 0. for forearc)
         idx = np.logical_not(sites.forearc)
-
         max_dist = dists.rhypo[idx]
         max_dist[max_dist < 85.0] = 85.0
         f_faba[idx] = C['theta7'] + C['theta8'] * np.log(max_dist / 40.0)
@@ -382,4 +360,3 @@ class AbrahamsonEtAl2013SSlabLow(AbrahamsonEtAl2013SSlab):
         """
         C['delta_c1'] = C['dc1_low']
         return C
-

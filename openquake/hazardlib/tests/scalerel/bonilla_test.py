@@ -36,17 +36,18 @@ class BonillaEtAl1984Aspect1p0TestCase(unittest.TestCase):
     """
     MSR = BonillaEtAl1984Aspect1p0
     PARAMS = {"Magnitude": 6.0,
-              "Expected Area": ????,
-              "Area Sigma": ????.
-              "Area": 10000.0,
-              "Expected Magnitude": ???,
-              "Magnitude Sigma": ?????}
+              "Expected Area": 101.8591388,
+              "Area Sigma": 0.572,
+              "Area": 1000.0,
+              "Expected Magnitude": 7.1020000,
+              "Magnitude Sigma": 0.306}
+
 
     def setUp(self):
         """
         Instantiates the test function
         """
-        self.msr = MSR()
+        self.msr = self.MSR()
 
     def test_get_median_area(self):
         """
@@ -92,11 +93,11 @@ class BonillaEtAl1984Aspect0p5TestCase(unittest.TestCase):
     """
     MSR = BonillaEtAl1984Aspect0p5
     PARAMS = {"Magnitude": 6.0,
-              "Expected Area": ????,
-              "Area Sigma": ????.
-              "Area": 10000.0,
-              "Expected Magnitude": ???,
-              "Magnitude Sigma": ?????}
+              "Expected Area": 203.7182776,
+              "Area Sigma": 0.572,
+              "Area": 1000.0,
+              "Expected Magnitude": 6.9954354,
+              "Magnitude Sigma": 0.306}
 
 
 class BonillaEtAl1984Aspect1p5TestCase(unittest.TestCase):
@@ -106,11 +107,11 @@ class BonillaEtAl1984Aspect1p5TestCase(unittest.TestCase):
     """
     MSR = BonillaEtAl1984Aspect1p5
     PARAMS = {"Magnitude": 6.0,
-              "Expected Area": ????,
-              "Area Sigma": ????.
-              "Area": 10000.0,
-              "Expected Magnitude": ???,
-              "Magnitude Sigma": ?????}
+              "Expected Area": 67.9060925,
+              "Area Sigma": 0.572,
+              "Area": 1000.0,
+              "Expected Magnitude": 7.1643363,
+              "Magnitude Sigma": 0.306}
 
 
 class BonillaEtAl1984Aspect2p0TestCase(unittest.TestCase):
@@ -120,11 +121,11 @@ class BonillaEtAl1984Aspect2p0TestCase(unittest.TestCase):
     """
     MSR = BonillaEtAl1984Aspect2p0
     PARAMS = {"Magnitude": 6.0,
-              "Expected Area": ????,
-              "Area Sigma": ????.
-              "Area": 10000.0,
-              "Expected Magnitude": ???,
-              "Magnitude Sigma": ?????}
+              "Expected Area": 50.9295694,
+              "Area Sigma": 0.572,
+              "Area": 1000.0,
+              "Expected Magnitude": 7.2085646,
+              "Magnitude Sigma": 0.306}
 
 
 class BonillaEtAl1984Aspect2p5TestCase(unittest.TestCase):
@@ -134,11 +135,11 @@ class BonillaEtAl1984Aspect2p5TestCase(unittest.TestCase):
     """
     MSR = BonillaEtAl1984Aspect2p5
     PARAMS = {"Magnitude": 6.0,
-              "Expected Area": ????,
-              "Area Sigma": ????.
-              "Area": 10000.0,
-              "Expected Magnitude": ???,
-              "Magnitude Sigma": ?????}
+              "Expected Area": 40.7436555,
+              "Area Sigma": 0.572,
+              "Area": 1000.0,
+              "Expected Magnitude": 7.2428708,
+              "Magnitude Sigma": 0.306}
 
 
 class BonillaEtAl1984Aspect3p0TestCase(unittest.TestCase):
@@ -148,11 +149,11 @@ class BonillaEtAl1984Aspect3p0TestCase(unittest.TestCase):
     """
     MSR = BonillaEtAl1984Aspect3p0
     PARAMS = {"Magnitude": 6.0,
-              "Expected Area": ????,
-              "Area Sigma": ????.
-              "Area": 10000.0,
-              "Expected Magnitude": ???,
-              "Magnitude Sigma": ?????}
+              "Expected Area": 33.9530463,
+              "Area Sigma": 0.572,
+              "Area": 1000.0,
+              "Expected Magnitude": 7.2709009,
+              "Magnitude Sigma": 0.306}
 
 
 class BonillaEtAl1984Aspect3p5TestCase(unittest.TestCase):
@@ -162,11 +163,11 @@ class BonillaEtAl1984Aspect3p5TestCase(unittest.TestCase):
     """
     MSR = BonillaEtAl1984Aspect3p5
     PARAMS = {"Magnitude": 6.0,
-              "Expected Area": ????,
-              "Area Sigma": ????.
-              "Area": 10000.0,
-              "Expected Magnitude": ???,
-              "Magnitude Sigma": ?????}
+              "Expected Area": 29.1026111,
+              "Area Sigma": 0.572,
+              "Area": 1000.0,
+              "Expected Magnitude": 7.2946001,
+              "Magnitude Sigma": 0.306}
 
 
 class BonillaEtAl1984Aspect4p0TestCase(unittest.TestCase):
@@ -176,11 +177,11 @@ class BonillaEtAl1984Aspect4p0TestCase(unittest.TestCase):
     """
     MSR = BonillaEtAl1984Aspect4p0
     PARAMS = {"Magnitude": 6.0,
-              "Expected Area": ????,
-              "Area Sigma": ????.
-              "Area": 10000.0,
-              "Expected Magnitude": ???,
-              "Magnitude Sigma": ?????}
+              "Expected Area": 25.4647847,
+              "Area Sigma": 0.572,
+              "Area": 1000.0,
+              "Expected Magnitude": 7.3151292,
+              "Magnitude Sigma": 0.306}
 
 
 class BonillaEtAl1984Aspect5p0TestCase(unittest.TestCase):
@@ -190,11 +191,11 @@ class BonillaEtAl1984Aspect5p0TestCase(unittest.TestCase):
     """
     MSR = BonillaEtAl1984Aspect5p0
     PARAMS = {"Magnitude": 6.0,
-              "Expected Area": ????,
-              "Area Sigma": ????.
-              "Area": 10000.0,
-              "Expected Magnitude": ???,
-              "Magnitude Sigma": ?????}
+              "Expected Area": 20.3718278,
+              "Area Sigma": 0.572,
+              "Area": 1000.0,
+              "Expected Magnitude": 7.3494354,
+              "Magnitude Sigma": 0.306}
 
 
 class BonillaEtAl1984Aspect6p0TestCase(unittest.TestCase):
@@ -204,11 +205,11 @@ class BonillaEtAl1984Aspect6p0TestCase(unittest.TestCase):
     """
     MSR = BonillaEtAl1984Aspect6p0
     PARAMS = {"Magnitude": 6.0,
-              "Expected Area": ????,
-              "Area Sigma": ????.
-              "Area": 10000.0,
-              "Expected Magnitude": ???,
-              "Magnitude Sigma": ?????}
+              "Expected Area": 16.9765231,
+              "Area Sigma": 0.572,
+              "Area": 1000.0,
+              "Expected Magnitude": 7.3774655,
+              "Magnitude Sigma": 0.306}
 
 
 class BonillaEtAl1984Aspect7p0TestCase(unittest.TestCase):
@@ -218,11 +219,11 @@ class BonillaEtAl1984Aspect7p0TestCase(unittest.TestCase):
     """
     MSR = BonillaEtAl1984Aspect7p0
     PARAMS = {"Magnitude": 6.0,
-              "Expected Area": ????,
-              "Area Sigma": ????.
-              "Area": 10000.0,
-              "Expected Magnitude": ???,
-              "Magnitude Sigma": ?????}
+              "Expected Area": 14.5513055,
+              "Area Sigma": 0.572,
+              "Area": 1000.0,
+              "Expected Magnitude": 7.4011647,
+              "Magnitude Sigma": 0.306}
 
 
 class BonillaEtAl1984Aspect8p0TestCase(unittest.TestCase):
@@ -232,8 +233,8 @@ class BonillaEtAl1984Aspect8p0TestCase(unittest.TestCase):
     """
     MSR = BonillaEtAl1984Aspect8p0
     PARAMS = {"Magnitude": 6.0,
-              "Expected Area": ????,
-              "Area Sigma": ????.
-              "Area": 10000.0,
-              "Expected Magnitude": ???,
-              "Magnitude Sigma": ?????}
+              "Expected Area": 12.7323924,
+              "Area Sigma": 0.572,
+              "Area": 1000.0,
+              "Expected Magnitude": 7.4216939,
+              "Magnitude Sigma": 0.306}

@@ -28,7 +28,7 @@ Module :mod:`openquake.hazardlib.scalerel.bonilla1984` implements
     :class:`BonillaEtAl1984Aspect7p0`
     :class:`BonillaEtAl1984Aspect8p0`
 """
-from math import log10
+from math import log10, sqrt
 from openquake.hazardlib.scalerel.base import BaseMSRSigma, BaseASRSigma
 
 class BonillaEtAl1984Aspect1p0(BaseMSRSigma, BaseASRSigma):
@@ -48,17 +48,10 @@ class BonillaEtAl1984Aspect1p0(BaseMSRSigma, BaseASRSigma):
 
     def get_std_dev_area(self, rake):
         """
-        The original regression gives the standard deviation for length.
-        area = length * (length / aspect) = (length ** 2.) / aspect
-        sigma_area = area + 1sigma - area
-        sigma_area = ((10 ^ (a + bM + sigma)) ^ 2) / aspect) -
-                     ((10 ^ (a + bM)) ^ 2) / aspect
-        log10(area * aspect) = 2 * (a + bM)
-        -> log10(area_sigma * aspect) = 2 * (a + bM + sigma) - 2 * (a + bM)
-                                      = 2 * sigma
-        area_sigma = (1. / aspect) * 10 ^ (2 * sigma)
+        The original regression gives the standard deviation for length of
+        0.286. In terms of area this becomes 0.572
         """
-        return log10((10.0 ** (2.0 * 0.286)) / self.ASPECT)
+        return 0.572
 
     def get_median_mag(self, area, rake):
         """
@@ -74,77 +67,77 @@ class BonillaEtAl1984Aspect1p0(BaseMSRSigma, BaseASRSigma):
         return 0.306
 
 
-class BonillaEtAl1984Aspect0p5(BonillaEtAl1984Aspect1p0)
+class BonillaEtAl1984Aspect0p5(BonillaEtAl1984Aspect1p0):
     """
     Bonilla et al. (1984) for the case when aspect ratio is 0.5
     """
     ASPECT = 0.5
 
 
-class BonillaEtAl1984Aspect1p5(BonillaEtAl1984Aspect1p0)
+class BonillaEtAl1984Aspect1p5(BonillaEtAl1984Aspect1p0):
     """
     Bonilla et al. (1984) for the case when aspect ratio is 1.5
     """
     ASPECT = 1.5
 
 
-class BonillaEtAl1984Aspect2p0(BonillaEtAl1984Aspect1p0)
+class BonillaEtAl1984Aspect2p0(BonillaEtAl1984Aspect1p0):
     """
     Bonilla et al. (1984) for the case when aspect ratio is 2.0
     """
     ASPECT = 2.0
 
 
-class BonillaEtAl1984Aspect2p5(BonillaEtAl1984Aspect1p0)
+class BonillaEtAl1984Aspect2p5(BonillaEtAl1984Aspect1p0):
     """
     Bonilla et al. (1984) for the case when aspect ratio is 2.5
     """
     ASPECT = 2.5
 
 
-class BonillaEtAl1984Aspect3p0(BonillaEtAl1984Aspect1p0)
+class BonillaEtAl1984Aspect3p0(BonillaEtAl1984Aspect1p0):
     """
     Bonilla et al. (1984) for the case when aspect ratio is 3.0
     """
     ASPECT = 3.0
 
 
-class BonillaEtAl1984Aspect3p5(BonillaEtAl1984Aspect1p0)
+class BonillaEtAl1984Aspect3p5(BonillaEtAl1984Aspect1p0):
     """
     Bonilla et al. (1984) for the case when aspect ratio is 3.5
     """
     ASPECT = 3.5
 
 
-class BonillaEtAl1984Aspect4p0(BonillaEtAl1984Aspect1p0)
+class BonillaEtAl1984Aspect4p0(BonillaEtAl1984Aspect1p0):
     """
     Bonilla et al. (1984) for the case when aspect ratio is 4.0
     """
     ASPECT = 4.0
 
 
-class BonillaEtAl1984Aspect6p0(BonillaEtAl1984Aspect1p0)
+class BonillaEtAl1984Aspect5p0(BonillaEtAl1984Aspect1p0):
     """
     Bonilla et al. (1984) for the case when aspect ratio is 5.0
     """
     ASPECT = 5.0
 
 
-class BonillaEtAl1984Aspect6p0(BonillaEtAl1984Aspect1p0)
+class BonillaEtAl1984Aspect6p0(BonillaEtAl1984Aspect1p0):
     """
     Bonilla et al. (1984) for the case when aspect ratio is 6.0
     """
     ASPECT = 6.0
 
 
-class BonillaEtAl1984Aspect7p0(BonillaEtAl1984Aspect1p0)
+class BonillaEtAl1984Aspect7p0(BonillaEtAl1984Aspect1p0):
     """
     Bonilla et al. (1984) for the case when aspect ratio is 7.0
     """
     ASPECT = 7.0
 
 
-class BonillaEtAl1984Aspect8p0(BonillaEtAl1984Aspect1p0)
+class BonillaEtAl1984Aspect8p0(BonillaEtAl1984Aspect1p0):
     """
     Bonilla et al. (1984) for the case when aspect ratio is 8.0
     """

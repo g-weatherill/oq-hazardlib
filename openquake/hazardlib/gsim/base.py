@@ -309,7 +309,7 @@ class GroundShakingIntensityModel(object):
             stddev = stddev.reshape(stddev.shape + (1, ))
             poes = 0.0
             for model, weight in mixture_model:
-                values = (imls - mean) / (stddev * weight)
+                values = (imls - mean) / (stddev * model)
                 if truncation_level is None:
                     poes += (weight * _norm_sf(values))
                 else:

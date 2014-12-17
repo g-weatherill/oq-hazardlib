@@ -131,3 +131,92 @@ def calc_hazard_curves(
     for imt in imtls:
         curves[imt] = 1 - curves[imt]
     return curves
+
+
+def calc_hazard_curves_mixture_model(
+        sources, sites, imtls, gsims, truncation_level,
+        source_site_filter=filters.source_site_noop_filter,
+        rupture_site_filter=filters.rupture_site_noop_filter):
+    """
+    Compute hazard curves on a list of sites, given a set of seismic sources
+    and a set of ground shaking intensity models (one per tectonic region type
+    considered in the seismic sources).
+
+
+    Probability of ground motion exceedance is computed using the following
+    formula ::
+
+        P(X≥x|T) = 1 - ∏ ∏ Prup_ij(X<x|T)
+
+    where ``P(X≥x|T)`` is the probability that the ground motion parameter
+    ``X`` is exceeding level ``x`` one or more times in a time span ``T``, and
+    ``Prup_ij(X<x|T)`` is the probability that the j-th rupture of the i-th
+    source is not producing any ground motion exceedance in time span ``T``.
+    The first product ``∏`` is done over sources, while the second one is done
+    over ruptures in a source.
+
+    The above formula computes the probability of having at least one ground
+    motion exceedance in a time span as 1 minus the probability that none of
+    the ruptures in none of the sources is causing a ground motion exceedance
+    in the same time span. The basic assumption is that seismic sources are
+    independent, and ruptures in a seismic source are also independent.
+
+    :param sources:
+        An iterator of seismic sources objects (instances of subclasses
+        of :class:`~openquake.hazardlib.source.base.BaseSeismicSource`).
+    :param sites:
+        Instance of :class:`~openquake.hazardlib.site.SiteCollection` object,
+        representing sites of interest.
+    :param imtls:
+        Dictionary mapping intensity measure type strings
+        to lists of intensity measure levels.
+    :param gsims:
+        Dictionary mapping tectonic region types (members
+        of :class:`openquake.hazardlib.const.TRT`) to a tuple containing the
+        :class:`~openquake.hazardlib.gsim.base.GMPE` or
+        :class:`~openquake.hazardlib.gsim.base.IPE` objects and their
+        corresponding mixture models. The mixture models are a list of tuples
+        of standard deviation scaling factor and corresponding weights
+    :param trunctation_level:
+        Float, number of standard deviations for truncation of the intensity
+        distribution.
+    :param source_site_filter:
+        Optional source-site filter function. See
+        :mod:`openquake.hazardlib.calc.filters`.
+    :param rupture_site_filter:
+        Optional rupture-site filter function. See
+        :mod:`openquake.hazardlib.calc.filters`.
+
+    :returns:
+        Dictionary mapping intensity measure type strings (same keys
+        as in parameter ``imtls``) to 2d numpy arrays of float, where
+        first dimension differentiates sites (the order and length
+        are the same as in ``sites`` parameter) and the second one
+        differentiates IMLs (the order and length are the same as
+        corresponding value in ``imts`` dict).
+    """
+    imts = {from_string(imt): imls for imt, imls in imtls.iteritems()}
+    curves = dict((imt, numpy.ones([len(sites), len(imtls[imt])]))
+                  for imt in imtls)
+    sources_sites = ((source, sites) for source in sources)
+    for source, s_sites in source_site_filter(sources_sites):
+        try:
+            ruptures_sites = ((rupture, s_sites)
+                              for rupture in source.iter_ruptures())
+            for rupture, r_sites in rupture_site_filter(ruptures_sites):
+                gsim, mixture_model = gsims[rupture.tectonic_region_type]
+                sctx, rctx, dctx = gsim.make_contexts(r_sites, rupture)
+                for imt in imts:
+                    poes = gsim.get_poes(sctx, rctx, dctx, imt, imts[imt],
+                                         truncation_level, mixture_model)
+                    pno = rupture.get_probability_no_exceedance(poes)
+                    curves[str(imt)] *= r_sites.expand(pno, placeholder=1)
+        except Exception, err:
+            etype, err, tb = sys.exc_info()
+            msg = 'An error occurred with source id=%s. Error: %s'
+            msg %= (source.source_id, err.message)
+            raise etype, msg, tb
+
+    for imt in imtls:
+        curves[imt] = 1 - curves[imt]
+    return curves

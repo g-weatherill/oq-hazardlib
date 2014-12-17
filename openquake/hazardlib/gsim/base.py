@@ -231,7 +231,8 @@ class GroundShakingIntensityModel(object):
         compute interim steps).
         """
 
-    def get_poes(self, sctx, rctx, dctx, imt, imls, truncation_level):
+    def get_poes(self, sctx, rctx, dctx, imt, imls, truncation_level,
+        mixture_model=[(1.0, 1.0)]):
         """
         Calculate and return probabilities of exceedance (PoEs) of one or more
         intensity measure levels (IMLs) of one intensity measure type (IMT)
@@ -306,12 +307,15 @@ class GroundShakingIntensityModel(object):
                                                        [const.StdDev.TOTAL])
             mean = mean.reshape(mean.shape + (1, ))
             stddev = stddev.reshape(stddev.shape + (1, ))
-            values = (imls - mean) / stddev
-            if truncation_level is None:
-                return _norm_sf(values)
-            else:
-                return _truncnorm_sf(truncation_level, values)
-
+            poes = 0.0
+            for model, weight in mixture_model:
+                values = (imls - mean) / (stddev * weight)
+                if truncation_level is None:
+                    poes += (weight * _norm_sf(values))
+                else:
+                    poes += (weight * _truncnorm_sf(truncation_level, values))
+            return poes
+    
     def disaggregate_poe(self, sctx, rctx, dctx, imt, iml,
                          truncation_level, n_epsilons):
         """

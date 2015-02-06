@@ -165,8 +165,8 @@ def _collect_bins_data(sources, site, imt, iml, gsims,
             for rupture, r_sites in rupture_site_filter(ruptures_sites):
                 # extract rupture parameters of interest
                 mags.append(rupture.mag)
-                [jb_dist] = rupture.surface.get_joyner_boore_distance(sitemesh)
-                dists.append(jb_dist)
+                [rup_dist] = rupture.surface.get_min_distance(sitemesh)
+                dists.append(rup_dist)
                 [closest_point] = rupture.surface.get_closest_points(sitemesh)
                 lons.append(closest_point.longitude)
                 lats.append(closest_point.latitude)
